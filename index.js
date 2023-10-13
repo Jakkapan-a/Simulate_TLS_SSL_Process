@@ -1,3 +1,4 @@
+
 const forge = require('node-forge');
 
 class Server{
@@ -46,24 +47,25 @@ class Client {
 }
 
 // เฟส 1: Handshake Phase
+// Create Server and Client
 const server = new Server();
+// Create session key and send to server
 const client = new Client(server.getPublicKey());
-
+// Create session key and send to server
 const encryptedSessionKey = client.generateAndSendSessionKey();
+// Server receive and decrypt session key
 server.receiveEncryptedSessionKey(encryptedSessionKey);
-
+// Print session key
 console.log('Session key: ', forge.util.bytesToHex(server.sessionKey));
 
+
 // เฟส 2: Data Transfer Phase
-
-const plainText = "Hello, Secure World!";
-
+const plainText = "Hello, This is data secure!";
+// Encrypt and send data to server
 const { encryptedData, iv } = client.sendEncryptedData(plainText);
-
 console.log('Encrypted data: ', forge.util.bytesToHex(encryptedData));
 console.log('IV: ', forge.util.bytesToHex(iv));
-
+// Server receive and decrypt data
 const receivedText  = server.receiveEncryptedData(encryptedData, iv);
-
 console.log("Original Message:", plainText);
 console.log("Received Message:", receivedText);
